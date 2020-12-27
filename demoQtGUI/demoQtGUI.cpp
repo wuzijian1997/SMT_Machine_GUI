@@ -1,5 +1,5 @@
 // Project: SMT Machine GUI
-// Version: 1.0
+// Version: Development 1.0
 // Author: ZijianWu wuapply6@163.com
 // Affiliation: Vision Measuring and Learning Lab, Automation Engineering School, UESTC 
 // Date: 2020/12/27
