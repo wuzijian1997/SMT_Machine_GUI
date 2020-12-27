@@ -1,0 +1,6 @@
+﻿  uic demoQtGUI.ui
+  demoQtGUI.cpp
+  main.cpp
+  new_window.cpp
+  moc_demoQtGUI.cpp
+  demoQtGUI.vcxproj -> G:\Qt_adjust\demoQtGUI\x64\Debug\demoQtGUI.exe
