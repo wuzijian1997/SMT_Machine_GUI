@@ -114,6 +114,7 @@ public:
     QLabel *savePhotoLabel2;
     QComboBox *pointNumberBox;
     QLabel *pointNumberLabel;
+    QPushButton *calcAllComponentsPushButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -407,6 +408,9 @@ public:
         pointNumberLabel = new QLabel(centralWidget);
         pointNumberLabel->setObjectName(QStringLiteral("pointNumberLabel"));
         pointNumberLabel->setGeometry(QRect(460, 20, 151, 21));
+        calcAllComponentsPushButton = new QPushButton(centralWidget);
+        calcAllComponentsPushButton->setObjectName(QStringLiteral("calcAllComponentsPushButton"));
+        calcAllComponentsPushButton->setGeometry(QRect(450, 420, 93, 28));
         demoQtGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(demoQtGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -500,6 +504,7 @@ public:
          << QApplication::translate("demoQtGUIClass", "4", Q_NULLPTR)
         );
         pointNumberLabel->setText(QApplication::translate("demoQtGUIClass", "\350\256\241\347\256\227\345\215\225\345\272\224\347\237\251\351\230\265\346\211\200\351\234\200\347\202\271\346\225\260", Q_NULLPTR));
+        calcAllComponentsPushButton->setText(QApplication::translate("demoQtGUIClass", "\345\205\250\351\203\250\350\256\241\347\256\227", Q_NULLPTR));
     } // retranslateUi
 
 };

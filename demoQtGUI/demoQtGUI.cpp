@@ -1,5 +1,5 @@
 // Project: SMT Machine GUI
-// Version: Development 1.0
+// Version: Development 1.1
 // Author: ZijianWu wuapply6@163.com
 // Affiliation: Vision Measuring and Learning Lab, Automation Engineering School, UESTC 
 // Date: 2020/12/27
@@ -762,4 +762,8 @@ void demoQtGUI::changeEnablePositionBtn()
 		ui.pointNumberLabel->setText(QString::fromLocal8Bit("请选择9个点计算"));
 		emit sendCurrentPointNumber(currentPointNumber);
 	}
+}
+void demoQtGUI::on_calcAllComponentsPushButton_clicked()
+{
+	ui.readFileLineEdit->setText("CALCULATE ALL!");
 }

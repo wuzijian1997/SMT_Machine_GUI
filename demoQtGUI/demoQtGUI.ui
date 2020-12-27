@@ -1157,6 +1157,19 @@
      <string>计算单应矩阵所需点数</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="calcAllComponentsPushButton">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>420</y>
+      <width>93</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>全部计算</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

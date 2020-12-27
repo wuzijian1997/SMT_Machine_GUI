@@ -1,4 +1,5 @@
 ﻿  uic demoQtGUI.ui
+  moc demoQtGUI.h
   demoQtGUI.cpp
   main.cpp
   new_window.cpp

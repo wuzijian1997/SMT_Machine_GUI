@@ -128,6 +128,7 @@ private slots:
     void on_movePushButton_clicked();
     // 设置计算单应矩阵的点数
     void changeEnablePositionBtn();
+    void on_calcAllComponentsPushButton_clicked();
 
 signals:
     void sendStringCoordinate(QString); 
