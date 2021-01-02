@@ -1,3 +1,7 @@
 ﻿  demoQtGUI.cpp
+  main.cpp
+  new_window.cpp
 G:\Qt_adjust\demoQtGUI\demoQtGUI\demoQtGUI.cpp(160): warning C4715: “demoQtGUI::getFrame”: 不是所有的控件路径都返回值
+  moc_demoQtGUI.cpp
+  LINK : 没有找到 G:\Qt_adjust\demoQtGUI\x64\Debug\demoQtGUI.exe 或上一个增量链接没有生成它；正在执行完全链接
   demoQtGUI.vcxproj -> G:\Qt_adjust\demoQtGUI\x64\Debug\demoQtGUI.exe
