@@ -115,6 +115,7 @@ public:
     QComboBox *pointNumberBox;
     QLabel *pointNumberLabel;
     QPushButton *calcAllComponentsPushButton;
+    QPushButton *takeAllPicturesPushButton;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
@@ -154,10 +155,10 @@ public:
         componentLineEdit_4->setGeometry(QRect(80, 300, 51, 21));
         calculateLabel = new QLabel(centralWidget);
         calculateLabel->setObjectName(QStringLiteral("calculateLabel"));
-        calculateLabel->setGeometry(QRect(30, 430, 101, 16));
+        calculateLabel->setGeometry(QRect(30, 440, 101, 16));
         componentLabel = new QLabel(centralWidget);
         componentLabel->setObjectName(QStringLiteral("componentLabel"));
-        componentLabel->setGeometry(QRect(140, 430, 72, 15));
+        componentLabel->setGeometry(QRect(140, 440, 72, 15));
         xyPushButton_1 = new QPushButton(centralWidget);
         xyPushButton_1->setObjectName(QStringLiteral("xyPushButton_1"));
         xyPushButton_1->setGeometry(QRect(250, 180, 93, 28));
@@ -172,16 +173,16 @@ public:
         xyPushButton_4->setGeometry(QRect(250, 300, 93, 28));
         componentLineEdit = new QLineEdit(centralWidget);
         componentLineEdit->setObjectName(QStringLiteral("componentLineEdit"));
-        componentLineEdit->setGeometry(QRect(190, 425, 41, 21));
+        componentLineEdit->setGeometry(QRect(190, 435, 41, 21));
         xyLabel = new QLabel(centralWidget);
         xyLabel->setObjectName(QStringLiteral("xyLabel"));
         xyLabel->setGeometry(QRect(30, 470, 72, 15));
         xyPushButton = new QPushButton(centralWidget);
         xyPushButton->setObjectName(QStringLiteral("xyPushButton"));
-        xyPushButton->setGeometry(QRect(250, 420, 93, 28));
+        xyPushButton->setGeometry(QRect(250, 430, 93, 28));
         movePushButton = new QPushButton(centralWidget);
         movePushButton->setObjectName(QStringLiteral("movePushButton"));
-        movePushButton->setGeometry(QRect(350, 420, 93, 28));
+        movePushButton->setGeometry(QRect(350, 430, 93, 28));
         imageLabel = new QLabel(centralWidget);
         imageLabel->setObjectName(QStringLiteral("imageLabel"));
         imageLabel->setGeometry(QRect(340, 470, 72, 15));
@@ -308,7 +309,7 @@ public:
         fileCoordinateLabel->setFrameShadow(QFrame::Raised);
         homographyLabel = new QLabel(centralWidget);
         homographyLabel->setObjectName(QStringLiteral("homographyLabel"));
-        homographyLabel->setGeometry(QRect(30, 380, 631, 31));
+        homographyLabel->setGeometry(QRect(350, 340, 311, 31));
         homographyLabel->setFrameShape(QFrame::Box);
         homographyLabel->setFrameShadow(QFrame::Raised);
         componentLabel_8 = new QLabel(centralWidget);
@@ -410,7 +411,10 @@ public:
         pointNumberLabel->setGeometry(QRect(460, 20, 151, 21));
         calcAllComponentsPushButton = new QPushButton(centralWidget);
         calcAllComponentsPushButton->setObjectName(QStringLiteral("calcAllComponentsPushButton"));
-        calcAllComponentsPushButton->setGeometry(QRect(450, 420, 93, 28));
+        calcAllComponentsPushButton->setGeometry(QRect(450, 430, 93, 28));
+        takeAllPicturesPushButton = new QPushButton(centralWidget);
+        takeAllPicturesPushButton->setObjectName(QStringLiteral("takeAllPicturesPushButton"));
+        takeAllPicturesPushButton->setGeometry(QRect(550, 430, 93, 28));
         demoQtGUIClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(demoQtGUIClass);
         menuBar->setObjectName(QStringLiteral("menuBar"));
@@ -505,6 +509,7 @@ public:
         );
         pointNumberLabel->setText(QApplication::translate("demoQtGUIClass", "\350\256\241\347\256\227\345\215\225\345\272\224\347\237\251\351\230\265\346\211\200\351\234\200\347\202\271\346\225\260", Q_NULLPTR));
         calcAllComponentsPushButton->setText(QApplication::translate("demoQtGUIClass", "\345\205\250\351\203\250\350\256\241\347\256\227", Q_NULLPTR));
+        takeAllPicturesPushButton->setText(QApplication::translate("demoQtGUIClass", "\345\205\250\351\203\250\346\213\215\347\205\247", Q_NULLPTR));
     } // retranslateUi
 
 };

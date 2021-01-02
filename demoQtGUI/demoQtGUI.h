@@ -45,7 +45,8 @@ private:
     QLabel* originalImageLabel1;
     QLabel* originalImageLabel2;
     QImage Mat2QImage(cv::Mat cvImg);
-    map<string, vector<double>> getCoordinateFromFile(string fileName, string componentString);
+    map<string, vector<double>> getCoordinateFromFile(string fileName);
+    void File2MachineCoordinate(double fileCoordinateX, double fileCoordinateY);
     // 定义了一个子窗口类的私有成员
     new_window* newWindow;
     // 定义了一个全局串口类对象
@@ -88,12 +89,16 @@ private:
     // 机器坐标
     double machineCoordinateX;
     double machineCoordinateY;
+    // map用于存放所有元件的文件坐标和机器坐标
+    map<string, vector<double>> processedMap;
+    // 读串口函数状态变量
+    int readStatus;
 
 private slots:
     void on_readFilePushButton_clicked();
     void on_displayTextPushButton_clicked();
     void on_openCameraPushButton1_clicked();
-    void getFrame();
+    int getFrame();
     void on_closeCameraPushButton1_clicked();
     void on_takePhotoPushButton1_clicked();
     void on_newWindowPushButton1_clicked();
@@ -129,6 +134,7 @@ private slots:
     // 设置计算单应矩阵的点数
     void changeEnablePositionBtn();
     void on_calcAllComponentsPushButton_clicked();
+    void on_takeAllPicturesPushButton_clicked();
 
 signals:
     void sendStringCoordinate(QString); 

@@ -1,8 +1,9 @@
 // Project: SMT Machine GUI
-// Version: Development 1.1
+// Version: Development 1.2
 // Author: ZijianWu wuapply6@163.com
 // Affiliation: Vision Measuring and Learning Lab, Automation Engineering School, UESTC 
-// Date: 2020/12/27
+// Date: 2021/01/02
+// Note: Realise complete Batch Process Function.
 #include "demoQtGUI.h"
 #include <Eigen/Dense>
 #include <QMessageBox>
@@ -106,7 +107,7 @@ void demoQtGUI::on_displayTextPushButton_clicked()
 }
 void demoQtGUI::on_openCameraPushButton1_clicked()
 {
-	capture.open(0);
+	capture.open(1);
 	capture.set(CAP_PROP_FRAME_WIDTH, 1280);
 	capture.set(CAP_PROP_FRAME_HEIGHT, 960);
 	timer->start(20);
@@ -114,14 +115,14 @@ void demoQtGUI::on_openCameraPushButton1_clicked()
 }
 void demoQtGUI::on_closeCameraPushButton1_clicked()
 {
-	timer->stop(); //停止取帧
+	timer->stop(); // stop getting frame
 	ui.originalImageLabel1->clear();
 	capture.release();
 	ui.savePhotoLabel1->setText("Camera closed!");
 }
 void demoQtGUI::on_takePhotoPushButton1_clicked()
 {
-	capture.open(0);  //打开摄像头（拍照时不一定正在拍摄，如果不加，没点打开摄像头会崩）
+	capture.open(1);  // open camera（拍照时不一定正在拍摄，如果不加，没点打开摄像头会崩）
 	capture.set(CAP_PROP_FRAME_WIDTH, 1280);
 	capture.set(CAP_PROP_FRAME_HEIGHT, 960);
 	capture >> showimage;
@@ -134,20 +135,21 @@ void demoQtGUI::on_takePhotoPushButton1_clicked()
 	// ui.processedimageLabel->setScaledContents(true);
 	// ui.processedimageLabel->setPixmap(QPixmap::fromImage(img));
 }
-void demoQtGUI::getFrame()
+int demoQtGUI::getFrame()
 {
 	capture >> showimage;
 	// 相机USB中断保护，通过提取相机的色调，连接时色调为0，中断时色调为先为13后变成-1
 	double lightCapHue = capture.get(CAP_PROP_HUE);
 	if (lightCapHue != 0)
 	{
-		timer->stop(); //停止取帧
+		timer->stop();
 		ui.originalImageLabel1->clear();
 		capture.release();
 		ui.savePhotoLabel1->setText("Camera closed!");
 		QString errorTitle = "error";
 		QString errorContent = "Camera connection is broken! Please reopen the camera.";
 		QMessageBox::critical(this, errorTitle, errorContent);
+		return -1;
 	}
 	// 将图像从OpenCV格式转换成Qt格式
 	QImage img = Mat2QImage(showimage);
@@ -192,13 +194,12 @@ void demoQtGUI::on_openSerialPushButton_clicked()
 			serial->setStopBits(QSerialPort::OneStop);
 			// Set Flow Control
 			serial->setFlowControl(QSerialPort::NoFlowControl);
-			// link signal and slot
+			// Link signal and slot
 			connect(serial, SIGNAL(readyRead()), this, SLOT(readSerialData()));
-			// serial->waitForReadyRead();
 		}
 		else
 		{
-			ui.serialOutputTextBrowser->setText("open failed");
+			ui.serialOutputTextBrowser->setText("Open failed");
 		}
 	}
 	else
@@ -237,7 +238,7 @@ void demoQtGUI::on_positionPushButton1_clicked()
 	writedata[1] = 0xAA;
 	writedata[2] = 0x56;
 	writedata[3] = 0x56;
-	// speed
+	// Speed
 	writedata[4] = 0x08;
 	// R260
 	// X Coordinate from low to high
@@ -260,7 +261,7 @@ void demoQtGUI::on_positionPushButton2_clicked()
 	writedata[1] = 0xAA;
 	writedata[2] = 0x56;
 	writedata[3] = 0x56;
-	// speed
+	// Speed
 	writedata[4] = 0x08;
 	// F14
 	// X Coordinate from low to high
@@ -469,7 +470,6 @@ void demoQtGUI::calcMachineHomography(vector<Point2f> machinePoints)
 		// 查看单应矩阵 machineH中的数据类型
 		// int datatype = machineH.type();
 		// ui.dataTypeLabel->setText(QString::number(datatype));
-
 		double valueOfHomography[9] = { 0 };
 		int n = 0;
 		for (int j = 0; j < machineH.rows; j++)
@@ -538,7 +538,7 @@ void demoQtGUI::on_xyPushButton_1_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX1 = pos->second[0];
 	fileCoordinateY1 = pos->second[1];
@@ -551,7 +551,7 @@ void demoQtGUI::on_xyPushButton_2_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX2 = pos->second[0];
 	fileCoordinateY2 = pos->second[1];
@@ -564,7 +564,7 @@ void demoQtGUI::on_xyPushButton_3_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX3 = pos->second[0];
 	fileCoordinateY3 = pos->second[1];
@@ -577,7 +577,7 @@ void demoQtGUI::on_xyPushButton_4_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX4 = pos->second[0];
 	fileCoordinateY4 = pos->second[1];
@@ -590,7 +590,7 @@ void demoQtGUI::on_xyPushButton_5_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX5 = pos->second[0];
 	fileCoordinateY5 = pos->second[1];
@@ -603,7 +603,7 @@ void demoQtGUI::on_xyPushButton_6_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX6 = pos->second[0];
 	fileCoordinateY6 = pos->second[1];
@@ -616,7 +616,7 @@ void demoQtGUI::on_xyPushButton_7_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX7 = pos->second[0];
 	fileCoordinateY7 = pos->second[1];
@@ -629,7 +629,7 @@ void demoQtGUI::on_xyPushButton_8_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX8 = pos->second[0];
 	fileCoordinateY8 = pos->second[1];
@@ -642,7 +642,7 @@ void demoQtGUI::on_xyPushButton_9_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX9 = pos->second[0];
 	fileCoordinateY9 = pos->second[1];
@@ -655,26 +655,14 @@ void demoQtGUI::on_xyPushButton_clicked()
 	string componentString = componentQString.toStdString();
 	string fileName = "DPPB_0915_XY.txt";
 	map<string, vector<double>> m;
-	m = getCoordinateFromFile(fileName, componentString);
+	//m = getCoordinateFromFile(fileName, componentString);
+	m = getCoordinateFromFile(fileName);
 	map<string, vector<double>>::iterator pos = m.find(componentString);
 	fileCoordinateX = pos->second[0];
 	fileCoordinateY = pos->second[1];
 	fileRotationAngle = pos->second[2];
 	ui.fileCoordinateLabel->setText(QString::number(fileCoordinateX, 'f', 3) + ',' + QString::number(fileCoordinateY, 'f', 3));
-	
-	Matrix<double, 3, 1> fileCoordinate;
-	Matrix<double, 3, 1> machineCoordinate;
-	double homogeneous = 1;
-	// 将Mat类转换成Matrix类
-	Matrix<float, 3, 3> machineHomography;
-	cv2eigen(machineH, machineHomography);
-	fileCoordinate << fileCoordinateX,
-		fileCoordinateY,
-		homogeneous;
-	machineCoordinate = machineHomography.cast<double>() * fileCoordinate;
-	// 矩阵第一个元素是(0, 0),而不是(1, 1)
-	machineCoordinateX = machineCoordinate(0, 0);
-	machineCoordinateY = machineCoordinate(1, 0);
+	File2MachineCoordinate(fileCoordinateX, fileCoordinateY);
 	ui.machineCoordinateLabel->setText(QString::number(machineCoordinateX) + ',' + QString::number(machineCoordinateY));
 }
 void demoQtGUI::on_movePushButton_clicked()
@@ -696,7 +684,7 @@ void demoQtGUI::on_movePushButton_clicked()
 	writedata[13] = 0x00;
 	serial->write(writedata);
 }
-map<string, vector<double>> demoQtGUI::getCoordinateFromFile(string fileName, string componentString)
+map<string, vector<double>> demoQtGUI::getCoordinateFromFile(string fileName)
 {
 	// 读取文件
 	ifstream txtStream(fileName);
@@ -710,7 +698,6 @@ map<string, vector<double>> demoQtGUI::getCoordinateFromFile(string fileName, st
 	vector<double> lines;
 	// 使用map实现对全部数据的存储
 	map<string, vector<double>> dataMap;
-
 	while (!txtStream.eof())
 	{
 		// getline逐行读取
@@ -765,5 +752,104 @@ void demoQtGUI::changeEnablePositionBtn()
 }
 void demoQtGUI::on_calcAllComponentsPushButton_clicked()
 {
-	ui.readFileLineEdit->setText("CALCULATE ALL!");
+	map<string, vector<double>> originMap;
+	originMap = getCoordinateFromFile("DPPB_0915_XY.txt");
+	map<string, vector<double>>::iterator iter;
+
+	iter = originMap.find("UUNITS");
+	iter = originMap.erase(iter);
+	iter = originMap.begin();
+	while (iter != originMap.end())
+	{
+		fileCoordinateX = iter->second[0];
+		fileCoordinateY = iter->second[1];
+		fileRotationAngle = iter->second[2];
+		File2MachineCoordinate(fileCoordinateX, fileCoordinateY);
+		vector<double> processedData;
+		processedData.push_back(iter->second[0]);
+		processedData.push_back(iter->second[1]);
+		processedData.push_back(iter->second[2]);
+		processedData.push_back(machineCoordinateX);
+		processedData.push_back(machineCoordinateY);
+		processedMap.insert(pair<string, vector<double>>(iter->first, processedData));
+		iter++;
+	}
+	//ui.textBrowser->setText(QString::number(processedMap.size()));
+	map<string, vector<double>>::iterator newIter;
+	newIter = processedMap.begin();
+	while (newIter != processedMap.end())
+	{
+		QString qs = QString::fromStdString(newIter->first);
+		if (newIter->second.size() != 5)
+		{
+			ui.textBrowser->setText(qs + ',' + QString::number(newIter->second.size()));
+		}
+		newIter++;
+	}
+	newIter = processedMap.begin();
+	ui.textBrowser->setText("Calculate all components' machine coordinate!" + QString::number(newIter->second[3]) + ',' + QString::number(newIter->second[4]));
+}
+void demoQtGUI::on_takeAllPicturesPushButton_clicked()
+{
+	map<string, vector<double>>::iterator iter;
+	iter = processedMap.begin();
+
+	//while (iter != processedMap.end())
+	for (int i = 0; i < 2; i++)
+	{
+		QByteArray writedata;
+		writedata[0] = 0xAA;
+		writedata[1] = 0xAA;
+		writedata[2] = 0x56;
+		writedata[3] = 0x56;
+		writedata[4] = 0x05;
+		writedata[5] = (int)round(iter->second[3]) & 0x000000ff;
+		writedata[6] = (int)round(iter->second[3]) >> 8 & 0x000000ff;
+		writedata[7] = (int)round(iter->second[3]) >> 16 & 0x000000ff;
+		writedata[8] = (int)round(iter->second[3]) >> 24 & 0x000000ff;
+		writedata[9] = (int)round(iter->second[4]) & 0x000000ff;
+		writedata[10] = (int)round(iter->second[4]) >> 8 & 0x000000ff;
+		writedata[11] = (int)round(iter->second[4]) >> 16 & 0x000000ff;
+		writedata[12] = (int)round(iter->second[4]) >> 24 & 0x000000ff;
+		writedata[13] = 0x00;
+		// 写串口
+		serial->write(writedata);
+		serial->waitForBytesWritten(5000);
+		// 读串口
+		while (serial->waitForReadyRead(5000))
+		{
+			readSerialData();
+		}
+		iter++;
+
+		capture.open(1);
+		capture.set(CAP_PROP_FRAME_WIDTH, 1280);
+		capture.set(CAP_PROP_FRAME_HEIGHT, 960);
+		timer->start(20);
+		ui.savePhotoLabel1->setText("Camera opened! Now take a picture!");
+		capture >> showimage;
+		line(showimage, Point(0, 480), Point(1280, 480), Scalar(255, 255, 0), 1);
+		line(showimage, Point(640, 0), Point(640, 960), Scalar(255, 255, 0), 1);
+		circle(showimage, Point(640, 480), 1, Scalar(255, 255, 0));
+		QImage tempImage = Mat2QImage(showimage);
+		string imageName = iter->first;
+		tempImage.save(QString::fromStdString(imageName), "BMP", -1);
+		ui.savePhotoLabel1->setText(QString::fromStdString(imageName) + "'s picture saved sucessfully!");
+		Sleep(1000);
+	}
+	//ui.savePhotoLabel1->setText("All components are photoed. Check them!");
+}
+void demoQtGUI::File2MachineCoordinate(double fileCoordinateX, double fileCoordinateY)
+{
+	Matrix<double, 3, 1> fileCoordinate;
+	Matrix<double, 3, 1> machineCoordinate;
+	Matrix<double, 3, 3> machineHomography;
+	fileCoordinate <<
+		fileCoordinateX,
+		fileCoordinateY,
+		1;
+	cv2eigen(machineH, machineHomography);
+	machineCoordinate = machineHomography * fileCoordinate;
+	machineCoordinateX = machineCoordinate(0, 0);
+	machineCoordinateY = machineCoordinate(1, 0);
 }
